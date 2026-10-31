@@ -14,12 +14,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VisualizerService = void 0;
 const http_status_1 = __importDefault(require("http-status"));
+const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
 const config_1 = __importDefault(require("../../config"));
 const AppError_1 = __importDefault(require("../../errors/AppError"));
 const cloudinary_1 = require("../../utlis/cloudinary");
 const visualizer_model_1 = require("./visualizer.model");
 function toDataUrl(input) {
     return __awaiter(this, void 0, void 0, function* () {
+        if (!input) {
+            throw new Error('Image source is missing.');
+        }
         if (input.startsWith('data:image/')) {
             return input;
         }
@@ -30,8 +35,30 @@ function toDataUrl(input) {
             }
             const buffer = yield res.arrayBuffer();
             const base64 = Buffer.from(buffer).toString('base64');
-            const contentType = res.headers.get('content-type') || 'image/jpeg';
+            let contentType = res.headers.get('content-type') || 'image/jpeg';
+            if (contentType.includes('webp')) {
+                contentType = 'image/webp';
+            }
+            else if (contentType.includes('png')) {
+                contentType = 'image/png';
+            }
+            else {
+                contentType = 'image/jpeg';
+            }
             return `data:${contentType};base64,${base64}`;
+        }
+        // Handle local path in frontend public directory (e.g. /before_image.png)
+        const candidatePaths = [
+            path_1.default.join(process.cwd(), '../curtain-ai-frontend/public', input.replace(/^\//, '')),
+            path_1.default.join(process.cwd(), 'public', input.replace(/^\//, '')),
+        ];
+        for (const candidate of candidatePaths) {
+            if (fs_1.default.existsSync(candidate)) {
+                const buffer = fs_1.default.readFileSync(candidate);
+                const ext = path_1.default.extname(candidate).toLowerCase();
+                const mime = ext === '.png' ? 'image/png' : ext === '.webp' ? 'image/webp' : 'image/jpeg';
+                return `data:${mime};base64,${buffer.toString('base64')}`;
+            }
         }
         throw new Error('Unsupported image format. Provide a valid URL or base64 dataUrl.');
     });
@@ -81,7 +108,7 @@ Output ONLY the modified room photograph with the newly fitted curtains.
         model: modelName,
         images: [{ image_url: roomDataUrl }, { image_url: curtainDataUrl }],
         prompt: promptInstruction,
-        quality: 'low',
+        quality: 'high',
         size: 'auto',
         output_format: 'jpeg',
         output_compression: 90,

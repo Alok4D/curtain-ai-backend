@@ -1,4 +1,6 @@
 import httpStatus from 'http-status';
+import fs from 'fs';
+import path from 'path';
 import config from '../../config';
 import AppError from '../../errors/AppError';
 import { uploadToCloudinary } from '../../utlis/cloudinary';
@@ -6,6 +8,10 @@ import { TVisualizationInput } from './visualizer.interface';
 import { Visualization } from './visualizer.model';
 
 async function toDataUrl(input: string): Promise<string> {
+  if (!input) {
+    throw new Error('Image source is missing.');
+  }
+
   if (input.startsWith('data:image/')) {
     return input;
   }
@@ -17,8 +23,30 @@ async function toDataUrl(input: string): Promise<string> {
     }
     const buffer = await res.arrayBuffer();
     const base64 = Buffer.from(buffer).toString('base64');
-    const contentType = res.headers.get('content-type') || 'image/jpeg';
+    let contentType = res.headers.get('content-type') || 'image/jpeg';
+    if (contentType.includes('webp')) {
+      contentType = 'image/webp';
+    } else if (contentType.includes('png')) {
+      contentType = 'image/png';
+    } else {
+      contentType = 'image/jpeg';
+    }
     return `data:${contentType};base64,${base64}`;
+  }
+
+  // Handle local path in frontend public directory (e.g. /before_image.png)
+  const candidatePaths = [
+    path.join(process.cwd(), '../curtain-ai-frontend/public', input.replace(/^\//, '')),
+    path.join(process.cwd(), 'public', input.replace(/^\//, '')),
+  ];
+
+  for (const candidate of candidatePaths) {
+    if (fs.existsSync(candidate)) {
+      const buffer = fs.readFileSync(candidate);
+      const ext = path.extname(candidate).toLowerCase();
+      const mime = ext === '.png' ? 'image/png' : ext === '.webp' ? 'image/webp' : 'image/jpeg';
+      return `data:${mime};base64,${buffer.toString('base64')}`;
+    }
   }
 
   throw new Error('Unsupported image format. Provide a valid URL or base64 dataUrl.');
@@ -86,7 +114,7 @@ Output ONLY the modified room photograph with the newly fitted curtains.
     model: modelName,
     images: [{ image_url: roomDataUrl }, { image_url: curtainDataUrl }],
     prompt: promptInstruction,
-    quality: 'low',
+    quality: 'high',
     size: 'auto',
     output_format: 'jpeg',
     output_compression: 90,
