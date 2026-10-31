@@ -166,6 +166,24 @@
         },
         {
           "name": "Update Admin Profile",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Profile updated successfully\", function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.eql(true);",
+                  "    pm.expect(jsonData.data).to.have.property('name');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "PATCH",
             "header": [
@@ -174,8 +192,14 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Curtainz Studio Lead Admin\",\n  \"phone\": \"+971 52 313 5707\",\n  \"location\": \"Dubai Design District (d3), UAE\",\n  \"bio\": \"Managing Curtainz luxury drape installations and AI Room Visualizer catalog.\"\n}"
+              "raw": "{\n  \"name\": \"Alex Morgan (Curtainz Admin)\",\n  \"phone\": \"+971 50 123 4567\",\n  \"location\": \"United Arab Emirates\",\n  \"avatarUrl\": \"https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80\",\n  \"bio\": \"Managing Curtainz luxury drape studio, fabric catalog and visualizer settings.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
+            "description": "Updates current logged-in user or admin profile. Accepts application/json format. Can update name, phone, location, bio, and avatarUrl (accepts direct image URL or base64 data:image string which auto-uploads to Cloudinary).",
             "url": {
               "raw": "{{baseUrl}}/users/me",
               "host": ["{{baseUrl}}"],

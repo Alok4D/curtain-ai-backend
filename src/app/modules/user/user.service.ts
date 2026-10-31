@@ -2,6 +2,7 @@ import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
 import { TUser } from './user.interface';
 import { User } from './user.model';
+import { uploadToCloudinary } from '../../utlis/cloudinary';
 
 const createUserIntoDB = async (payload: Partial<TUser>) => {
   const isExisting = await User.isUserExistsByEmail(payload.email as string);
@@ -30,6 +31,16 @@ const updateProfileInDB = async (email: string, payload: Partial<TUser>) => {
   // Prevent email or role escalation via general update
   delete payload.email;
   delete payload.role;
+
+  // Handle avatar upload to Cloudinary if provided as data URL
+  if (payload.avatarUrl && payload.avatarUrl.startsWith('data:image')) {
+    try {
+      const uploadRes = await uploadToCloudinary(payload.avatarUrl, 'avatars');
+      payload.avatarUrl = uploadRes.secure_url;
+    } catch (uploadErr) {
+      console.warn('Avatar upload to Cloudinary failed, saving raw URL:', uploadErr);
+    }
+  }
 
   const result = await User.findOneAndUpdate({ email }, payload, {
     new: true,

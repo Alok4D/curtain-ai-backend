@@ -16,6 +16,7 @@ exports.UserService = void 0;
 const AppError_1 = __importDefault(require("../../errors/AppError"));
 const http_status_1 = __importDefault(require("http-status"));
 const user_model_1 = require("./user.model");
+const cloudinary_1 = require("../../utlis/cloudinary");
 const createUserIntoDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const isExisting = yield user_model_1.User.isUserExistsByEmail(payload.email);
     if (isExisting) {
@@ -39,6 +40,16 @@ const updateProfileInDB = (email, payload) => __awaiter(void 0, void 0, void 0, 
     // Prevent email or role escalation via general update
     delete payload.email;
     delete payload.role;
+    // Handle avatar upload to Cloudinary if provided as data URL
+    if (payload.avatarUrl && payload.avatarUrl.startsWith('data:image')) {
+        try {
+            const uploadRes = yield (0, cloudinary_1.uploadToCloudinary)(payload.avatarUrl, 'avatars');
+            payload.avatarUrl = uploadRes.secure_url;
+        }
+        catch (uploadErr) {
+            console.warn('Avatar upload to Cloudinary failed, saving raw URL:', uploadErr);
+        }
+    }
     const result = yield user_model_1.User.findOneAndUpdate({ email }, payload, {
         new: true,
         runValidators: true,
