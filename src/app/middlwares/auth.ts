@@ -9,40 +9,36 @@ import catchAsync from '../utlis/catchAsync';
 
 const auth = (...requiredRoles: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization;
+    let token = req.headers.authorization;
 
-    // checking if the token is missing
     if (!token) {
-      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
+      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized to access this resource!');
     }
 
-    // checking if the given token is valid
+    if (token.startsWith('Bearer ')) {
+      token = token.split(' ')[1];
+    }
+
     const decoded = jwt.verify(
       token,
       config.jwt_access_secret as string,
     ) as JwtPayload;
 
-    const { role, userId, iat } = decoded;
+    const email = decoded.userEmail || decoded.email;
+    const { role, iat } = decoded;
 
-    // checking if the user is exist
-    const user = await User.isUserExistsByCustomId(userId);
+    const user = await User.isUserExistsByEmail(email);
 
     if (!user) {
-      throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
-    }
-    // checking if the user is already deleted
-
-    const isDeleted = user?.isDeleted;
-
-    if (isDeleted) {
-      throw new AppError(httpStatus.FORBIDDEN, 'This user is deleted !');
+      throw new AppError(httpStatus.NOT_FOUND, 'User does not exist!');
     }
 
-    // checking if the user is blocked
-    const userStatus = user?.status;
+    if (user.isDeleted) {
+      throw new AppError(httpStatus.FORBIDDEN, 'This user account is deleted!');
+    }
 
-    if (userStatus === 'blocked') {
-      throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked ! !');
+    if (user.status === 'blocked') {
+      throw new AppError(httpStatus.FORBIDDEN, 'This user account is blocked!');
     }
 
     if (
@@ -52,17 +48,19 @@ const auth = (...requiredRoles: TUserRole[]) => {
         iat as number,
       )
     ) {
-      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized !');
+      throw new AppError(httpStatus.UNAUTHORIZED, 'Password was changed recently. Please log in again.');
     }
 
-    if (requiredRoles && !requiredRoles.includes(role)) {
-      throw new AppError(
-        httpStatus.UNAUTHORIZED,
-        'You are not authorized  hi!',
-      );
+    if (requiredRoles && requiredRoles.length > 0 && !requiredRoles.includes(role)) {
+      throw new AppError(httpStatus.FORBIDDEN, 'You do not have permission to perform this action!');
     }
 
-    req.user = decoded as JwtPayload;
+    req.user = {
+      ...decoded,
+      userEmail: email,
+      role,
+    };
+
     next();
   });
 };

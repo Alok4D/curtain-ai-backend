@@ -1,62 +1,32 @@
 import { Router } from 'express';
-import { AdminRoutes } from '../modules/Admin/admin.route';
-import { CourseRoutes } from '../modules/Course/course.route';
-import { FacultyRoutes } from '../modules/Faculty/faculty.route';
-import { AcademicDepartmentRoutes } from '../modules/academicDepartment/academicDepartment.route';
-import { AcademicFacultyRoutes } from '../modules/academicFaculty/academicFaculty.route';
-import { AcademicSemesterRoutes } from '../modules/academicSemester/academicSemester.route';
-import { StudentRoutes } from '../modules/student/student.route';
-import { UserRoutes } from '../modules/user/user.route';
-import { semesterRegistrationRoutes } from '../modules/SemesterRegistration/semesterRegistration.route';
-import { offeredCourseRoutes } from '../modules/OfferedCourse/offeredCourse.route';
 import { AuthRoutes } from '../modules/Auth/auth.route';
+import { CurtainRoutes } from '../modules/curtain/curtain.route';
+import { DashboardRoutes } from '../modules/dashboard/dashboard.route';
+import { UserRoutes } from '../modules/user/user.route';
+import { VisualizerRoutes } from '../modules/visualizer/visualizer.route';
 
 const router = Router();
 
 const moduleRoutes = [
   {
+    path: '/auth',
+    route: AuthRoutes,
+  },
+  {
     path: '/users',
     route: UserRoutes,
   },
   {
-    path: '/students',
-    route: StudentRoutes,
+    path: '/curtains',
+    route: CurtainRoutes,
   },
   {
-    path: '/faculties',
-    route: FacultyRoutes,
+    path: '/visualizer',
+    route: VisualizerRoutes,
   },
   {
-    path: '/admins',
-    route: AdminRoutes,
-  },
-  {
-    path: '/academic-semesters',
-    route: AcademicSemesterRoutes,
-  },
-  {
-    path: '/academic-faculties',
-    route: AcademicFacultyRoutes,
-  },
-  {
-    path: '/academic-departments',
-    route: AcademicDepartmentRoutes,
-  },
-  {
-    path: '/courses',
-    route: CourseRoutes,
-  },
-  {
-    path: '/semester-registrations',
-    route: semesterRegistrationRoutes,
-  },
-  {
-    path: '/offered-course',
-    route: offeredCourseRoutes,
-  },
-  {
-    path: '/auth',
-    route: AuthRoutes,
+    path: '/dashboard',
+    route: DashboardRoutes,
   },
 ];
 

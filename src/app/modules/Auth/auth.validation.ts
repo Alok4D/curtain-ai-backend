@@ -2,7 +2,8 @@ import { z } from 'zod';
 
 const loginValidationSchema = z.object({
   body: z.object({
-    id: z.string({ message: 'Id is required.' }),
+    email: z.string().email().optional(),
+    id: z.string().optional(),
     password: z.string({ message: 'Password is required' }),
   }),
 });
@@ -12,7 +13,7 @@ const changePasswordValidationSchema = z.object({
     oldPassword: z.string({
       message: 'Old password is required',
     }),
-    newPassword: z.string({ message: 'Password is required' }),
+    newPassword: z.string({ message: 'New password is required' }).min(6),
   }),
 });
 

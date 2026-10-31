@@ -1,49 +1,45 @@
 import httpStatus from 'http-status';
-import { UserServices } from './user.service';
 import catchAsync from '../../utlis/catchAsync';
 import sendResponse from '../../utlis/sendResponse';
+import { UserService } from './user.service';
 
-const createStudent = catchAsync(async (req, res) => {
-  const { password, student: studentData } = req.body;
-
-  const result = await UserServices.createStudentIntoDB(password, studentData);
+const createUser = catchAsync(async (req, res) => {
+  const result = await UserService.createUserIntoDB(req.body);
 
   sendResponse(res, {
-    statusCode: httpStatus.OK,
+    statusCode: httpStatus.CREATED,
     success: true,
-    message: 'Student is created succesfully',
+    message: 'User registered successfully!',
     data: result,
   });
 });
 
-const createFaculty = catchAsync(async (req, res) => {
-  const { password, faculty: facultyData } = req.body;
-
-  const result = await UserServices.createFacultyIntoDB(password, facultyData);
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Faculty is created succesfully',
-    data: result,
-  });
-});
-
-const createAdmin = catchAsync(async (req, res) => {
-  const { password, admin: adminData } = req.body;
-
-  const result = await UserServices.createAdminIntoDB(password, adminData);
+const getMe = catchAsync(async (req, res) => {
+  const { userEmail } = req.user;
+  const result = await UserService.getMeFromDB(userEmail);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Admin is created succesfully',
+    message: 'User profile retrieved successfully!',
     data: result,
   });
 });
 
-export const UserControllers = {
-  createStudent,
-  createFaculty,
-  createAdmin,
+const updateProfile = catchAsync(async (req, res) => {
+  const { userEmail } = req.user;
+  const result = await UserService.updateProfileInDB(userEmail, req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User profile updated successfully!',
+    data: result,
+  });
+});
+
+export const UserController = {
+  createUser,
+  getMe,
+  updateProfile,
 };

@@ -1,15 +1,31 @@
 import { z } from 'zod';
 
-const userValidationSchema = z.object({
-  password: z
-    .string()
-    .max(20, { message: 'Password cannot be more than 20 characters' })
-    .optional()
-    .refine((val) => typeof val === 'string' || val === undefined, {
-      message: 'Password must be a string',
-    }),
+const createUserValidationSchema = z.object({
+  body: z.object({
+    name: z.string({ message: 'Name is required' }),
+    email: z.string({ message: 'Valid email is required' }).email(),
+    password: z
+      .string({ message: 'Password is required' })
+      .min(6, 'Password must be at least 6 characters'),
+    phone: z.string().optional(),
+    role: z.enum(['admin', 'user']).optional(),
+    avatarUrl: z.string().optional(),
+    location: z.string().optional(),
+    bio: z.string().optional(),
+  }),
+});
+
+const updateUserValidationSchema = z.object({
+  body: z.object({
+    name: z.string().optional(),
+    phone: z.string().optional(),
+    avatarUrl: z.string().optional(),
+    location: z.string().optional(),
+    bio: z.string().optional(),
+  }),
 });
 
 export const UserValidation = {
-  userValidationSchema,
+  createUserValidationSchema,
+  updateUserValidationSchema,
 };

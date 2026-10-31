@@ -1,33 +1,24 @@
 import express from 'express';
-import { createAdminValidationSchema } from '../Admin/admin.validation';
-import { createFacultyValidationSchema } from '../Faculty/faculty.validation';
-import { createStudentValidationSchema } from '../student/student.validation';
-import { UserControllers } from './user.controller';
-import validateRequest from '../../middlwares/validateRequest';
 import auth from '../../middlwares/auth';
-import { USER_ROLE } from './user.constant';
+import validateRequest from '../../middlwares/validateRequest';
+import { UserController } from './user.controller';
+import { UserValidation } from './user.validation';
 
 const router = express.Router();
 
 router.post(
-  '/create-student',
-  auth(USER_ROLE.admin),
-  validateRequest(createStudentValidationSchema),
-  UserControllers.createStudent,
+  '/create-user',
+  validateRequest(UserValidation.createUserValidationSchema),
+  UserController.createUser,
 );
 
-router.post(
-  '/create-faculty',
-  // auth(USER_ROLE.admin),
-  validateRequest(createFacultyValidationSchema),
-  UserControllers.createFaculty,
-);
+router.get('/me', auth('admin', 'user'), UserController.getMe);
 
-router.post(
-  '/create-admin',
-  // auth(USER_ROLE.admin),
-  validateRequest(createAdminValidationSchema),
-  UserControllers.createAdmin,
+router.patch(
+  '/me',
+  auth('admin', 'user'),
+  validateRequest(UserValidation.updateUserValidationSchema),
+  UserController.updateProfile,
 );
 
 export const UserRoutes = router;

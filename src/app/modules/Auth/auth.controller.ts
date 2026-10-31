@@ -6,44 +6,44 @@ import sendResponse from '../../utlis/sendResponse';
 
 const loginUser = catchAsync(async (req, res) => {
   const result = await AuthServices.loginUser(req.body);
-  const { refreshToken, accessToken, needsPasswordChange } = result;
+  const { refreshToken, accessToken, user } = result;
 
   res.cookie('refreshToken', refreshToken, {
     secure: config.NODE_ENV === 'production',
     httpOnly: true,
+    sameSite: config.NODE_ENV === 'production' ? 'none' : 'lax',
   });
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'User is logged in succesfully!',
+    message: 'User logged in successfully!',
     data: {
       accessToken,
-      needsPasswordChange,
+      refreshToken,
+      user,
     },
   });
 });
 
 const changePassword = catchAsync(async (req, res) => {
-  const { ...passwordData } = req.body;
-
-  const result = await AuthServices.changePassword(req.user, passwordData);
+  const result = await AuthServices.changePassword(req.user, req.body);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Password is updated succesfully!',
+    message: 'Password changed successfully!',
     data: result,
   });
 });
 
 const refreshToken = catchAsync(async (req, res) => {
-  const { refreshToken } = req.cookies;
-  const result = await AuthServices.refreshToken(refreshToken);
+  const token = req.cookies.refreshToken || req.body.refreshToken;
+  const result = await AuthServices.refreshToken(token);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Access token is retrieved succesfully!',
+    message: 'Access token retrieved successfully!',
     data: result,
   });
 });
