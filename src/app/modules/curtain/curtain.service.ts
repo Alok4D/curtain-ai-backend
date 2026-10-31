@@ -3,6 +3,7 @@ import AppError from '../../errors/AppError';
 import { TCurtain } from './curtain.interface';
 import { Curtain } from './curtain.model';
 import { initialCurtainsSeedData } from './curtain.seed';
+import { uploadToCloudinary } from '../../utlis/cloudinary';
 
 const getAllCurtainsFromDB = async (query: Record<string, unknown>) => {
   const filter: Record<string, unknown> = { isDeleted: false };
@@ -41,6 +42,19 @@ const createCurtainIntoDB = async (payload: TCurtain) => {
     payload.id = lastItem?.id ? lastItem.id + 1 : Date.now();
   }
 
+  // Auto-upload to Cloudinary if image is provided as base64 DataURL
+  if (payload.display_image_url && payload.display_image_url.startsWith('data:image')) {
+    try {
+      const uploadRes = await uploadToCloudinary(payload.display_image_url, 'curtains');
+      payload.display_image_url = uploadRes.secure_url;
+      if (!payload.image_url || payload.image_url.startsWith('data:image')) {
+        payload.image_url = uploadRes.secure_url;
+      }
+    } catch (uploadErr) {
+      console.warn('Curtain photo upload to Cloudinary failed:', uploadErr);
+    }
+  }
+
   const result = await Curtain.create(payload);
   return result;
 };
@@ -48,6 +62,19 @@ const createCurtainIntoDB = async (payload: TCurtain) => {
 const updateCurtainInDB = async (id: string | number, payload: Partial<TCurtain>) => {
   const isNumeric = !isNaN(Number(id));
   const query = isNumeric ? { id: Number(id), isDeleted: false } : { _id: id, isDeleted: false };
+
+  // Auto-upload to Cloudinary if image is updated as base64 DataURL
+  if (payload.display_image_url && payload.display_image_url.startsWith('data:image')) {
+    try {
+      const uploadRes = await uploadToCloudinary(payload.display_image_url, 'curtains');
+      payload.display_image_url = uploadRes.secure_url;
+      if (payload.image_url && payload.image_url.startsWith('data:image')) {
+        payload.image_url = uploadRes.secure_url;
+      }
+    } catch (uploadErr) {
+      console.warn('Curtain photo upload to Cloudinary failed:', uploadErr);
+    }
+  }
 
   const result = await Curtain.findOneAndUpdate(query, payload, {
     new: true,
