@@ -22,6 +22,21 @@ const refreshTokenValidationSchema = z.object({
     refreshToken: z.string({
       message: 'Refresh token is required!',
     }),
+  }).optional(),
+});
+
+const forgotPasswordValidationSchema = z.object({
+  body: z.object({
+    email: z.string({ message: 'Valid email is required' }).email(),
+  }),
+});
+
+const resetPasswordValidationSchema = z.object({
+  body: z.object({
+    password: z
+      .string({ message: 'Password is required' })
+      .min(6, 'Password must be at least 6 characters'),
+    token: z.string().optional(),
   }),
 });
 
@@ -29,4 +44,6 @@ export const AuthValidation = {
   loginValidationSchema,
   changePasswordValidationSchema,
   refreshTokenValidationSchema,
+  forgotPasswordValidationSchema,
+  resetPasswordValidationSchema,
 };

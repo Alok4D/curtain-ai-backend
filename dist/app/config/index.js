@@ -21,4 +21,10 @@ exports.default = {
     cloudinary_api_key: process.env.CLOUDINARY_API_KEY,
     cloudinary_api_secret: process.env.CLOUDINARY_API_SECRET,
     client_url: process.env.CLIENT_URL || 'http://localhost:3000',
+    email_host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+    email_port: Number(process.env.EMAIL_PORT) || 465,
+    email_user: process.env.EMAIL_USER,
+    email_pass: process.env.EMAIL_PASS,
+    email_from: process.env.EMAIL_FROM || 'MetaGen AI <alokroy602701@gmail.com>',
+    reset_pass_ui_link: `${process.env.CLIENT_URL || 'http://localhost:3000'}/reset-password`,
 };

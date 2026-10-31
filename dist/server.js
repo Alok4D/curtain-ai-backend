@@ -16,6 +16,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const app_1 = __importDefault(require("./app"));
 const config_1 = __importDefault(require("./app/config"));
 const curtain_service_1 = require("./app/modules/curtain/curtain.service");
+const user_model_1 = require("./app/modules/user/user.model");
 let server;
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -30,7 +31,27 @@ function main() {
                 }
             }
             catch (seedErr) {
-                console.warn('Seed notice:', seedErr);
+                console.warn('Fabric seed notice:', seedErr);
+            }
+            // Automatically seed default Admin user if none exists
+            try {
+                const existingAdmin = yield user_model_1.User.findOne({ email: 'admin@curtainz.ai' });
+                if (!existingAdmin) {
+                    yield user_model_1.User.create({
+                        name: 'Curtainz Studio Admin',
+                        email: 'admin@curtainz.ai',
+                        password: 'admin123456',
+                        role: 'admin',
+                        phone: '+971 52 313 5707',
+                        location: 'Dubai Design District (d3), UAE',
+                        bio: 'Chief Store Administrator for Curtainz Studio Dubai',
+                        status: 'active',
+                    });
+                    console.log('👑 Default Admin user created: admin@curtainz.ai / admin123456');
+                }
+            }
+            catch (adminErr) {
+                console.warn('Admin seed notice:', adminErr);
             }
             server = app_1.default.listen(config_1.default.port, () => {
                 console.log(`🚀 Curtainz Backend Server is running on port ${config_1.default.port}`);

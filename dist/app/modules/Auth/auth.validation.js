@@ -22,10 +22,25 @@ const refreshTokenValidationSchema = zod_1.z.object({
         refreshToken: zod_1.z.string({
             message: 'Refresh token is required!',
         }),
+    }).optional(),
+});
+const forgotPasswordValidationSchema = zod_1.z.object({
+    body: zod_1.z.object({
+        email: zod_1.z.string({ message: 'Valid email is required' }).email(),
+    }),
+});
+const resetPasswordValidationSchema = zod_1.z.object({
+    body: zod_1.z.object({
+        password: zod_1.z
+            .string({ message: 'Password is required' })
+            .min(6, 'Password must be at least 6 characters'),
+        token: zod_1.z.string().optional(),
     }),
 });
 exports.AuthValidation = {
     loginValidationSchema,
     changePasswordValidationSchema,
     refreshTokenValidationSchema,
+    forgotPasswordValidationSchema,
+    resetPasswordValidationSchema,
 };

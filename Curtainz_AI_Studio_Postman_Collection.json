@@ -1,0 +1,364 @@
+{
+  "info": {
+    "_postman_id": "curtainz-ai-studio-api-collection",
+    "name": "Curtainz AI Studio API",
+    "description": "Complete Postman collection for Curtainz AI Studio: Auth, AI Room Visualizer Engine, Fabrics Catalog, Profile Management & Dashboard Stats.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Register User / Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sarah Jenkins\",\n  \"email\": \"sarah@example.com\",\n  \"password\": \"password123\",\n  \"phone\": \"+971 50 123 4567\",\n  \"role\": \"user\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/create-user",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "create-user"]
+            }
+          }
+        },
+        {
+          "name": "Login (Admin or User)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.success && response.data?.accessToken) {",
+                  "    pm.collectionVariables.set('accessToken', response.data.accessToken);",
+                  "    console.log('Access token saved to collection variable!');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@curtainz.ai\",\n  \"password\": \"admin123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Forgot Password (Sends Real SMTP Email)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@curtainz.ai\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/forgot-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "forgot-password"]
+            }
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"<PASTE_RESET_TOKEN_OR_USE_URL_QUERY>\",\n  \"password\": \"newSecurePass123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/reset-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "reset-password"]
+            }
+          }
+        },
+        {
+          "name": "Change Password (Authenticated)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"oldPassword\": \"admin123456\",\n  \"newPassword\": \"adminSecure2026\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/change-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "change-password"]
+            }
+          }
+        },
+        {
+          "name": "Refresh Access Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"<OPTIONAL_IF_COOKIE_NOT_SET>\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh-token",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "refresh-token"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. User & Admin Profile",
+      "item": [
+        {
+          "name": "Get Current User Profile (/me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "me"]
+            }
+          }
+        },
+        {
+          "name": "Update Admin Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Curtainz Studio Lead Admin\",\n  \"phone\": \"+971 52 313 5707\",\n  \"location\": \"Dubai Design District (d3), UAE\",\n  \"bio\": \"Managing Curtainz luxury drape installations and AI Room Visualizer catalog.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "me"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Curtains & Fabrics Catalog",
+      "item": [
+        {
+          "name": "Get All Curtains (Catalog)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/curtains",
+              "host": ["{{baseUrl}}"],
+              "path": ["curtains"]
+            }
+          }
+        },
+        {
+          "name": "Get Curtains by Category (Curtains / Sheers / Rollers)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/curtains?category=curtains",
+              "host": ["{{baseUrl}}"],
+              "path": ["curtains"],
+              "query": [
+                { "key": "category", "value": "curtains" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search Curtains (by Name or Material)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/curtains?searchTerm=linen",
+              "host": ["{{baseUrl}}"],
+              "path": ["curtains"],
+              "query": [
+                { "key": "searchTerm", "value": "linen" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Single Curtain by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/curtains/28",
+              "host": ["{{baseUrl}}"],
+              "path": ["curtains", "28"]
+            }
+          }
+        },
+        {
+          "name": "Create Curtain Fabric (Admin Only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Velvet Emerald Drape\",\n  \"category\": \"curtains\",\n  \"image_url\": \"https://curtainz-ae.b-cdn.net/media/curtain_options/2025_08_19_10_51_IMG_3489.jpeg\",\n  \"display_image_url\": \"https://curtainz-ae.b-cdn.net/media/curtain_options/display/Generated_Image_September_04_2025_-_10_15PM.jpeg\",\n  \"material\": \"100% Cotton Velvet\",\n  \"price\": 240,\n  \"inStock\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/curtains",
+              "host": ["{{baseUrl}}"],
+              "path": ["curtains"]
+            }
+          }
+        },
+        {
+          "name": "Update Curtain Fabric (Admin Only)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Blue Lenin Premium\",\n  \"price\": 210,\n  \"material\": \"100% Belgian Washed Linen\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/curtains/28",
+              "host": ["{{baseUrl}}"],
+              "path": ["curtains", "28"]
+            }
+          }
+        },
+        {
+          "name": "Delete Curtain Fabric (Admin Only)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/curtains/28",
+              "host": ["{{baseUrl}}"],
+              "path": ["curtains", "28"]
+            }
+          }
+        },
+        {
+          "name": "Trigger Fabric Database Seed",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/curtains/seed",
+              "host": ["{{baseUrl}}"],
+              "path": ["curtains", "seed"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. AI Visualizer (Core Engine)",
+      "item": [
+        {
+          "name": "Generate Curtain AI Visualization",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roomImage\": \"https://curtainz-ae.b-cdn.net/media/curtain_options/display/Generated_Image_September_04_2025_-_10_15PM.jpeg\",\n  \"curtainImage\": \"https://curtainz-ae.b-cdn.net/media/curtain_options/2025_08_19_10_51_IMG_3489.jpeg\",\n  \"curtainName\": \"Blue Lenin\",\n  \"drapeLength\": \"just touching the floor\",\n  \"drapePosition\": \"pulled open to the sides framing the window with natural daylight coming through\",\n  \"curtainRod\": \"matte black minimalist curtain rod mounted just below the ceiling\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/visualizer/generate",
+              "host": ["{{baseUrl}}"],
+              "path": ["visualizer", "generate"]
+            }
+          }
+        },
+        {
+          "name": "Get Recent AI Room Previews",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/visualizer/recent?limit=8",
+              "host": ["{{baseUrl}}"],
+              "path": ["visualizer", "recent"],
+              "query": [
+                { "key": "limit", "value": "8" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Admin Dashboard Stats",
+      "item": [
+        {
+          "name": "Get Dashboard Overview Stats (KPIs & Previews)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["dashboard", "stats"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+
