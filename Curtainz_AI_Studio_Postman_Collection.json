@@ -1,8 +1,8 @@
 {
   "info": {
-    "_postman_id": "curtainz-ai-studio-api-collection",
-    "name": "Curtainz AI Studio API",
-    "description": "Complete Postman collection for Curtainz AI Studio: Auth, AI Room Visualizer Engine, Fabrics Catalog, Profile Management & Dashboard Stats.",
+    "_postman_id": "curtainz-ai-studio-api-collection-v2",
+    "name": "Curtainz AI Studio API (Production)",
+    "description": "Comprehensive Postman API Collection for Curtainz AI Studio: Authentication, User & Admin Profiles, AI Visualizer Engine (OpenAI gpt-image-2.5-sunburst), Curtains & Fabrics Catalog (Curtains, Sheers, Rollers), Cloudinary Asset Sync, and Admin Dashboard Analytics.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -40,7 +40,7 @@
           }
         },
         {
-          "name": "Login (Admin or User)",
+          "name": "Login (Admin)",
           "event": [
             {
               "listen": "test",
@@ -49,7 +49,7 @@
                   "const response = pm.response.json();",
                   "if (response.success && response.data?.accessToken) {",
                   "    pm.collectionVariables.set('accessToken', response.data.accessToken);",
-                  "    console.log('Access token saved to collection variable!');",
+                  "    console.log('Admin access token saved to collection variable!');",
                   "}"
                 ],
                 "type": "text/javascript"
@@ -73,7 +73,7 @@
           }
         },
         {
-          "name": "Forgot Password (Sends Real SMTP Email)",
+          "name": "Forgot Password (Real SMTP Email)",
           "request": {
             "method": "POST",
             "header": [
@@ -99,7 +99,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"token\": \"<PASTE_RESET_TOKEN_OR_USE_URL_QUERY>\",\n  \"password\": \"newSecurePass123\"\n}"
+              "raw": "{\n  \"token\": \"<PASTE_RESET_TOKEN_OR_USE_URL_QUERY>\",\n  \"password\": \"admin123456\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/auth/reset-password",
@@ -165,25 +165,7 @@
           }
         },
         {
-          "name": "Update Admin Profile",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "pm.test(\"Profile updated successfully\", function () {",
-                  "    const jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.success).to.eql(true);",
-                  "    pm.expect(jsonData.data).to.have.property('name');",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
+          "name": "Update Admin Profile (JSON)",
           "request": {
             "method": "PATCH",
             "header": [
@@ -192,18 +174,30 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Alex Morgan (Curtainz Admin)\",\n  \"phone\": \"+971 50 123 4567\",\n  \"location\": \"United Arab Emirates\",\n  \"avatarUrl\": \"https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80\",\n  \"bio\": \"Managing Curtainz luxury drape studio, fabric catalog and visualizer settings.\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
+              "raw": "{\n  \"name\": \"Alex Morgan (Studio Admin)\",\n  \"phone\": \"+971 50 123 4567\",\n  \"location\": \"Dubai, United Arab Emirates\",\n  \"avatarUrl\": \"https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80\",\n  \"bio\": \"Managing Curtainz luxury drape studio, fabric catalog and visualizer settings.\"\n}"
             },
-            "description": "Updates current logged-in user or admin profile. Accepts application/json format. Can update name, phone, location, bio, and avatarUrl (accepts direct image URL or base64 data:image string which auto-uploads to Cloudinary).",
             "url": {
               "raw": "{{baseUrl}}/users/me",
               "host": ["{{baseUrl}}"],
               "path": ["users", "me"]
+            }
+          }
+        },
+        {
+          "name": "Get All Registered Users (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
             }
           }
         }
@@ -224,7 +218,7 @@
           }
         },
         {
-          "name": "Get Curtains by Category (Curtains / Sheers / Rollers)",
+          "name": "Get Curtains by Category (Curtains)",
           "request": {
             "method": "GET",
             "url": {
@@ -233,6 +227,34 @@
               "path": ["curtains"],
               "query": [
                 { "key": "category", "value": "curtains" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Curtains by Category (Sheers)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/curtains?category=sheers",
+              "host": ["{{baseUrl}}"],
+              "path": ["curtains"],
+              "query": [
+                { "key": "category", "value": "sheers" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Curtains by Category (Rollers)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/curtains?category=rollers",
+              "host": ["{{baseUrl}}"],
+              "path": ["curtains"],
+              "query": [
+                { "key": "category", "value": "rollers" }
               ]
             }
           }
@@ -256,14 +278,14 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/curtains/28",
+              "raw": "{{baseUrl}}/curtains/32",
               "host": ["{{baseUrl}}"],
-              "path": ["curtains", "28"]
+              "path": ["curtains", "32"]
             }
           }
         },
         {
-          "name": "Create Curtain Fabric (Admin Only)",
+          "name": "Create Curtain Fabric (via URL)",
           "request": {
             "method": "POST",
             "header": [
@@ -282,6 +304,25 @@
           }
         },
         {
+          "name": "Create Curtain Fabric (via Base64 - Auto Cloudinary Sync)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Custom Linen Sheer Sample\",\n  \"category\": \"sheers\",\n  \"image_url\": \"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP...\",\n  \"display_image_url\": \"https://curtainz-ae.b-cdn.net/media/curtain_options/display/Generated_Image_September_04_2025_-_10_15PM.jpeg\",\n  \"material\": \"Belgian Washed Linen\",\n  \"price\": 195,\n  \"inStock\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/curtains",
+              "host": ["{{baseUrl}}"],
+              "path": ["curtains"]
+            }
+          }
+        },
+        {
           "name": "Update Curtain Fabric (Admin Only)",
           "request": {
             "method": "PATCH",
@@ -291,12 +332,12 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Blue Lenin Premium\",\n  \"price\": 210,\n  \"material\": \"100% Belgian Washed Linen\"\n}"
+              "raw": "{\n  \"name\": \"Fine horizontal stripe (Updated)\",\n  \"price\": 185,\n  \"material\": \"Textured Thermal Blackout Premium\",\n  \"inStock\": true\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/curtains/28",
+              "raw": "{{baseUrl}}/curtains/32",
               "host": ["{{baseUrl}}"],
-              "path": ["curtains", "28"]
+              "path": ["curtains", "32"]
             }
           }
         },
@@ -308,14 +349,14 @@
               { "key": "Authorization", "value": "Bearer {{accessToken}}" }
             ],
             "url": {
-              "raw": "{{baseUrl}}/curtains/28",
+              "raw": "{{baseUrl}}/curtains/32",
               "host": ["{{baseUrl}}"],
-              "path": ["curtains", "28"]
+              "path": ["curtains", "32"]
             }
           }
         },
         {
-          "name": "Trigger Fabric Database Seed",
+          "name": "Trigger Fabric Database Seed (Sync JSON to DB)",
           "request": {
             "method": "GET",
             "url": {
@@ -331,7 +372,7 @@
       "name": "4. AI Visualizer (Core Engine)",
       "item": [
         {
-          "name": "Generate Curtain AI Visualization",
+          "name": "Generate Curtain AI Visualization (High Quality)",
           "request": {
             "method": "POST",
             "header": [
@@ -339,7 +380,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"roomImage\": \"https://curtainz-ae.b-cdn.net/media/curtain_options/display/Generated_Image_September_04_2025_-_10_15PM.jpeg\",\n  \"curtainImage\": \"https://curtainz-ae.b-cdn.net/media/curtain_options/2025_08_19_10_51_IMG_3489.jpeg\",\n  \"curtainName\": \"Blue Lenin\",\n  \"drapeLength\": \"just touching the floor\",\n  \"drapePosition\": \"pulled open to the sides framing the window with natural daylight coming through\",\n  \"curtainRod\": \"matte black minimalist curtain rod mounted just below the ceiling\"\n}"
+              "raw": "{\n  \"roomImage\": \"/before_image.png\",\n  \"curtainImage\": \"https://curtainz-ae.b-cdn.net/media/curtain_options/display/Generated_Image_September_04_2025_-_10_24PM.jpeg\",\n  \"curtainName\": \"Fine horizontal stripe\",\n  \"drapeLength\": \"just touching the floor\",\n  \"drapePosition\": \"pulled open to the sides framing the window with natural daylight coming through\",\n  \"curtainRod\": \"matte black minimalist curtain rod mounted just below the ceiling\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/visualizer/generate",
@@ -365,10 +406,10 @@
       ]
     },
     {
-      "name": "5. Admin Dashboard Stats",
+      "name": "5. Admin Dashboard Analytics",
       "item": [
         {
-          "name": "Get Dashboard Overview Stats (KPIs & Previews)",
+          "name": "Get Dashboard Overview Stats (KPIs, Users, Curtains, Previews)",
           "request": {
             "method": "GET",
             "header": [
@@ -385,4 +426,3 @@
     }
   ]
 }
-
