@@ -13,7 +13,7 @@ export const uploadToCloudinary = async (
 ): Promise<{ secure_url: string; public_id: string }> => {
   try {
     const result = await cloudinary.uploader.upload(fileOrBase64, {
-      folder: `curtainz/${folder}`,
+      folder: `Curtain AI/${folder}`,
       resource_type: 'auto',
     });
     return {

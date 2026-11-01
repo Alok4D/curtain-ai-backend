@@ -1,8 +1,8 @@
 {
   "info": {
-    "_postman_id": "curtainz-ai-studio-api-collection-v2",
-    "name": "Curtainz AI Studio API (Production)",
-    "description": "Comprehensive Postman API Collection for Curtainz AI Studio: Authentication, User & Admin Profiles, AI Visualizer Engine (OpenAI gpt-image-2.5-sunburst), Curtains & Fabrics Catalog (Curtains, Sheers, Rollers), Cloudinary Asset Sync, and Admin Dashboard Analytics.",
+    "_postman_id": "Curtain AI-ai-studio-api-collection-v2",
+    "name": "Curtain AI AI Studio API (Production)",
+    "description": "Comprehensive Postman API Collection for Curtain AI AI Studio: Authentication, User & Admin Profiles, AI Visualizer Engine (OpenAI gpt-image-2.5-sunburst), Curtains & Fabrics Catalog (Curtains, Sheers, Rollers), Cloudinary Asset Sync, and Admin Dashboard Analytics.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -26,7 +26,10 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -34,8 +37,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/users/create-user",
-              "host": ["{{baseUrl}}"],
-              "path": ["users", "create-user"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "create-user"
+              ]
             }
           }
         },
@@ -59,16 +67,24 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"admin@curtainz.ai\",\n  \"password\": \"admin123456\"\n}"
+              "raw": "{\n  \"email\": \"admin@Curtain AI.ai\",\n  \"password\": \"admin123456\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/auth/login",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "login"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
             }
           }
         },
@@ -77,16 +93,24 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"admin@curtainz.ai\"\n}"
+              "raw": "{\n  \"email\": \"admin@Curtain AI.ai\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/auth/forgot-password",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "forgot-password"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "forgot-password"
+              ]
             }
           }
         },
@@ -95,7 +119,10 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -103,8 +130,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/auth/reset-password",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "reset-password"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "reset-password"
+              ]
             }
           }
         },
@@ -113,8 +145,14 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -122,8 +160,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/auth/change-password",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "change-password"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "change-password"
+              ]
             }
           }
         },
@@ -132,7 +175,10 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -140,8 +186,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/auth/refresh-token",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "refresh-token"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "refresh-token"
+              ]
             }
           }
         }
@@ -155,12 +206,20 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
             ],
             "url": {
               "raw": "{{baseUrl}}/users/me",
-              "host": ["{{baseUrl}}"],
-              "path": ["users", "me"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
             }
           }
         },
@@ -169,17 +228,28 @@
           "request": {
             "method": "PATCH",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Alex Morgan (Studio Admin)\",\n  \"phone\": \"+971 50 123 4567\",\n  \"location\": \"Dubai, United Arab Emirates\",\n  \"avatarUrl\": \"https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80\",\n  \"bio\": \"Managing Curtainz luxury drape studio, fabric catalog and visualizer settings.\"\n}"
+              "raw": "{\n  \"name\": \"Alex Morgan (Studio Admin)\",\n  \"phone\": \"+971 50 123 4567\",\n  \"location\": \"Dubai, United Arab Emirates\",\n  \"avatarUrl\": \"https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80\",\n  \"bio\": \"Managing Curtain AI luxury drape studio, fabric catalog and visualizer settings.\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/users/me",
-              "host": ["{{baseUrl}}"],
-              "path": ["users", "me"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
             }
           }
         },
@@ -188,15 +258,28 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
             ],
             "url": {
               "raw": "{{baseUrl}}/users?page=1&limit=10",
-              "host": ["{{baseUrl}}"],
-              "path": ["users"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ],
               "query": [
-                { "key": "page", "value": "1" },
-                { "key": "limit", "value": "10" }
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
               ]
             }
           }
@@ -212,8 +295,12 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/curtains",
-              "host": ["{{baseUrl}}"],
-              "path": ["curtains"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "curtains"
+              ]
             }
           }
         },
@@ -223,10 +310,17 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/curtains?category=curtains",
-              "host": ["{{baseUrl}}"],
-              "path": ["curtains"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "curtains"
+              ],
               "query": [
-                { "key": "category", "value": "curtains" }
+                {
+                  "key": "category",
+                  "value": "curtains"
+                }
               ]
             }
           }
@@ -237,10 +331,17 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/curtains?category=sheers",
-              "host": ["{{baseUrl}}"],
-              "path": ["curtains"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "curtains"
+              ],
               "query": [
-                { "key": "category", "value": "sheers" }
+                {
+                  "key": "category",
+                  "value": "sheers"
+                }
               ]
             }
           }
@@ -251,10 +352,17 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/curtains?category=rollers",
-              "host": ["{{baseUrl}}"],
-              "path": ["curtains"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "curtains"
+              ],
               "query": [
-                { "key": "category", "value": "rollers" }
+                {
+                  "key": "category",
+                  "value": "rollers"
+                }
               ]
             }
           }
@@ -265,10 +373,17 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/curtains?searchTerm=linen",
-              "host": ["{{baseUrl}}"],
-              "path": ["curtains"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "curtains"
+              ],
               "query": [
-                { "key": "searchTerm", "value": "linen" }
+                {
+                  "key": "searchTerm",
+                  "value": "linen"
+                }
               ]
             }
           }
@@ -279,8 +394,13 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/curtains/32",
-              "host": ["{{baseUrl}}"],
-              "path": ["curtains", "32"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "curtains",
+                "32"
+              ]
             }
           }
         },
@@ -289,17 +409,27 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Velvet Emerald Drape\",\n  \"category\": \"curtains\",\n  \"image_url\": \"https://curtainz-ae.b-cdn.net/media/curtain_options/2025_08_19_10_51_IMG_3489.jpeg\",\n  \"display_image_url\": \"https://curtainz-ae.b-cdn.net/media/curtain_options/display/Generated_Image_September_04_2025_-_10_15PM.jpeg\",\n  \"material\": \"100% Cotton Velvet\",\n  \"price\": 240,\n  \"inStock\": true\n}"
+              "raw": "{\n  \"name\": \"Velvet Emerald Drape\",\n  \"category\": \"curtains\",\n  \"image_url\": \"https://Curtain AI-ae.b-cdn.net/media/curtain_options/2025_08_19_10_51_IMG_3489.jpeg\",\n  \"display_image_url\": \"https://Curtain AI-ae.b-cdn.net/media/curtain_options/display/Generated_Image_September_04_2025_-_10_15PM.jpeg\",\n  \"material\": \"100% Cotton Velvet\",\n  \"price\": 240,\n  \"inStock\": true\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/curtains",
-              "host": ["{{baseUrl}}"],
-              "path": ["curtains"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "curtains"
+              ]
             }
           }
         },
@@ -308,17 +438,27 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Custom Linen Sheer Sample\",\n  \"category\": \"sheers\",\n  \"image_url\": \"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP...\",\n  \"display_image_url\": \"https://curtainz-ae.b-cdn.net/media/curtain_options/display/Generated_Image_September_04_2025_-_10_15PM.jpeg\",\n  \"material\": \"Belgian Washed Linen\",\n  \"price\": 195,\n  \"inStock\": true\n}"
+              "raw": "{\n  \"name\": \"Custom Linen Sheer Sample\",\n  \"category\": \"sheers\",\n  \"image_url\": \"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP...\",\n  \"display_image_url\": \"https://Curtain AI-ae.b-cdn.net/media/curtain_options/display/Generated_Image_September_04_2025_-_10_15PM.jpeg\",\n  \"material\": \"Belgian Washed Linen\",\n  \"price\": 195,\n  \"inStock\": true\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/curtains",
-              "host": ["{{baseUrl}}"],
-              "path": ["curtains"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "curtains"
+              ]
             }
           }
         },
@@ -327,8 +467,14 @@
           "request": {
             "method": "PATCH",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -336,8 +482,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/curtains/32",
-              "host": ["{{baseUrl}}"],
-              "path": ["curtains", "32"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "curtains",
+                "32"
+              ]
             }
           }
         },
@@ -346,12 +497,20 @@
           "request": {
             "method": "DELETE",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
             ],
             "url": {
               "raw": "{{baseUrl}}/curtains/32",
-              "host": ["{{baseUrl}}"],
-              "path": ["curtains", "32"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "curtains",
+                "32"
+              ]
             }
           }
         },
@@ -361,8 +520,13 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/curtains/seed",
-              "host": ["{{baseUrl}}"],
-              "path": ["curtains", "seed"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "curtains",
+                "seed"
+              ]
             }
           }
         }
@@ -376,16 +540,24 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"roomImage\": \"/before_image.png\",\n  \"curtainImage\": \"https://curtainz-ae.b-cdn.net/media/curtain_options/display/Generated_Image_September_04_2025_-_10_24PM.jpeg\",\n  \"curtainName\": \"Fine horizontal stripe\",\n  \"drapeLength\": \"just touching the floor\",\n  \"drapePosition\": \"pulled open to the sides framing the window with natural daylight coming through\",\n  \"curtainRod\": \"matte black minimalist curtain rod mounted just below the ceiling\"\n}"
+              "raw": "{\n  \"roomImage\": \"/before_image.png\",\n  \"curtainImage\": \"https://Curtain AI-ae.b-cdn.net/media/curtain_options/display/Generated_Image_September_04_2025_-_10_24PM.jpeg\",\n  \"curtainName\": \"Fine horizontal stripe\",\n  \"drapeLength\": \"just touching the floor\",\n  \"drapePosition\": \"pulled open to the sides framing the window with natural daylight coming through\",\n  \"curtainRod\": \"matte black minimalist curtain rod mounted just below the ceiling\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/visualizer/generate",
-              "host": ["{{baseUrl}}"],
-              "path": ["visualizer", "generate"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "visualizer",
+                "generate"
+              ]
             }
           }
         },
@@ -395,10 +567,18 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/visualizer/recent?limit=8",
-              "host": ["{{baseUrl}}"],
-              "path": ["visualizer", "recent"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "visualizer",
+                "recent"
+              ],
               "query": [
-                { "key": "limit", "value": "8" }
+                {
+                  "key": "limit",
+                  "value": "8"
+                }
               ]
             }
           }
@@ -413,12 +593,20 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
             ],
             "url": {
               "raw": "{{baseUrl}}/dashboard/stats",
-              "host": ["{{baseUrl}}"],
-              "path": ["dashboard", "stats"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dashboard",
+                "stats"
+              ]
             }
           }
         }

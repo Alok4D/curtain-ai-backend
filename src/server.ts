@@ -10,7 +10,7 @@ let server: Server;
 async function main() {
   try {
     await mongoose.connect(config.database_url as string);
-    console.log('🍃 MongoDB connected successfully to Curtainz Studio database!');
+    console.log('🍃 MongoDB connected successfully to Curtain AI Studio database!');
 
     // Automatically seed fabric catalog if empty
     try {
@@ -24,26 +24,26 @@ async function main() {
 
     // Automatically seed default Admin user if none exists
     try {
-      const existingAdmin = await User.findOne({ email: 'admin@curtainz.ai' });
+      const existingAdmin = await User.findOne({ email: 'admin@Curtain AI.ai' });
       if (!existingAdmin) {
         await User.create({
-          name: 'Curtainz Studio Admin',
-          email: 'admin@curtainz.ai',
+          name: 'Curtain AI Studio Admin',
+          email: 'admin@Curtain AI.ai',
           password: 'admin123456',
           role: 'admin',
           phone: '+971 52 313 5707',
           location: 'Dubai Design District (d3), UAE',
-          bio: 'Chief Store Administrator for Curtainz Studio Dubai',
+          bio: 'Chief Store Administrator for Curtain AI Studio Dubai',
           status: 'active',
         });
-        console.log('👑 Default Admin user created: admin@curtainz.ai / admin123456');
+        console.log('👑 Default Admin user created: admin@Curtain AI.ai / admin123456');
       }
     } catch (adminErr) {
       console.warn('Admin seed notice:', adminErr);
     }
 
     server = app.listen(config.port, () => {
-      console.log(`🚀 Curtainz Backend Server is running on port ${config.port}`);
+      console.log(`🚀 Curtain AI Backend Server is running on port ${config.port}`);
     });
   } catch (err) {
     console.error('Failed to start server:', err);

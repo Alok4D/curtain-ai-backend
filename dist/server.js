@@ -22,7 +22,7 @@ function main() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             yield mongoose_1.default.connect(config_1.default.database_url);
-            console.log('🍃 MongoDB connected successfully to Curtainz Studio database!');
+            console.log('🍃 MongoDB connected successfully to Curtain AI Studio database!');
             // Automatically seed fabric catalog if empty
             try {
                 const seedResult = yield curtain_service_1.CurtainService.seedCurtainsIntoDB();
@@ -35,26 +35,26 @@ function main() {
             }
             // Automatically seed default Admin user if none exists
             try {
-                const existingAdmin = yield user_model_1.User.findOne({ email: 'admin@curtainz.ai' });
+                const existingAdmin = yield user_model_1.User.findOne({ email: 'admin@Curtain AI.ai' });
                 if (!existingAdmin) {
                     yield user_model_1.User.create({
-                        name: 'Curtainz Studio Admin',
-                        email: 'admin@curtainz.ai',
+                        name: 'Curtain AI Studio Admin',
+                        email: 'admin@Curtain AI.ai',
                         password: 'admin123456',
                         role: 'admin',
                         phone: '+971 52 313 5707',
                         location: 'Dubai Design District (d3), UAE',
-                        bio: 'Chief Store Administrator for Curtainz Studio Dubai',
+                        bio: 'Chief Store Administrator for Curtain AI Studio Dubai',
                         status: 'active',
                     });
-                    console.log('👑 Default Admin user created: admin@curtainz.ai / admin123456');
+                    console.log('👑 Default Admin user created: admin@Curtain AI.ai / admin123456');
                 }
             }
             catch (adminErr) {
                 console.warn('Admin seed notice:', adminErr);
             }
             server = app_1.default.listen(config_1.default.port, () => {
-                console.log(`🚀 Curtainz Backend Server is running on port ${config_1.default.port}`);
+                console.log(`🚀 Curtain AI Backend Server is running on port ${config_1.default.port}`);
             });
         }
         catch (err) {

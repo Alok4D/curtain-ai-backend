@@ -41,7 +41,7 @@ app.use('/api/v1', routes_1.default);
 app.get('/', (req, res) => {
     res.json({
         success: true,
-        message: '✨ Curtainz AI Studio Engine & Management Backend API is Live!',
+        message: '✨ Curtain AI AI Studio Engine & Management Backend API is Live!',
         version: '1.0.0',
         documentation: '/api/v1',
     });

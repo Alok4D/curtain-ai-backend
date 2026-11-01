@@ -133,7 +133,7 @@ const forgotPassword = (email) => __awaiter(void 0, void 0, void 0, function* ()
     const htmlContent = `
     <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 580px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
       <div style="background-color: #004642; padding: 28px; text-align: center;">
-        <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: bold; letter-spacing: -0.5px;">Curtainz AI Studio</h1>
+        <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: bold; letter-spacing: -0.5px;">Curtain AI AI Studio</h1>
         <p style="color: #a4df3b; margin: 6px 0 0 0; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">Password Reset Request</p>
       </div>
       <div style="padding: 32px 28px; color: #2d3748; line-height: 1.6;">
@@ -152,7 +152,7 @@ const forgotPassword = (email) => __awaiter(void 0, void 0, void 0, function* ()
     </div>
   `;
     try {
-        yield (0, sendEmail_1.sendEmail)(user.email, htmlContent, 'Curtainz AI Studio - Reset Your Password');
+        yield (0, sendEmail_1.sendEmail)(user.email, htmlContent, 'Curtain AI AI Studio - Reset Your Password');
     }
     catch (emailErr) {
         console.error('Email sending failed (check Gmail App Password credentials):', emailErr);

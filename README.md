@@ -1,6 +1,6 @@
-# 🎨 Curtainz AI Studio - Backend API Engine
+# 🎨 Curtain AI AI Studio - Backend API Engine
 
-The core backend service for **Curtainz AI Studio**, an intelligent luxury curtain visualizer and fabric management platform. Built with **Node.js, Express.js, TypeScript, and MongoDB (Mongoose)**, this backend delivers AI-powered photorealistic room rendering using OpenAI, seamless Cloudinary media storage, robust JWT authentication, and comprehensive admin dashboard analytics.
+The core backend service for **Curtain AI AI Studio**, an intelligent luxury curtain visualizer and fabric management platform. Built with **Node.js, Express.js, TypeScript, and MongoDB (Mongoose)**, this backend delivers AI-powered photorealistic room rendering using OpenAI, seamless Cloudinary media storage, robust JWT authentication, and comprehensive admin dashboard analytics.
 
 ---
 
@@ -64,7 +64,7 @@ curtain-ai-backend/
 │   │   └── utlis/              # Cloudinary upload helpers, sendEmail SMTP, catchAsync
 │   ├── app.ts                  # Express application setup, CORS, parsers
 │   └── server.ts               # Server startup & MongoDB database connection
-├── Curtainz_AI_Studio_Postman_Collection.json  # Comprehensive Postman collection
+├── Curtain AI_AI_Studio_Postman_Collection.json  # Comprehensive Postman collection
 ├── package.json
 ├── tsconfig.json
 └── .env
@@ -108,7 +108,7 @@ EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=465
 EMAIL_USER=your_email@gmail.com
 EMAIL_PASS=your_google_app_password
-EMAIL_FROM="Curtainz AI Studio <your_email@gmail.com>"
+EMAIL_FROM="Curtain AI AI Studio <your_email@gmail.com>"
 ```
 
 ---
@@ -161,7 +161,7 @@ Base URL: `http://localhost:5000/api/v1`
 
 Import the included Postman collection file:
 ```text
-Curtainz_AI_Studio_Postman_Collection.json
+Curtain AI_AI_Studio_Postman_Collection.json
 ```
 - Includes automatic script to capture and set `{{accessToken}}` upon login.
 - Pre-populated with real test payloads for all categories and AI generation scenarios.
@@ -190,5 +190,5 @@ Curtainz_AI_Studio_Postman_Collection.json
 
 ---
 
-*Curtainz AI Studio Backend — Engineering photorealistic interior experiences with AI precision.*
+*Curtain AI AI Studio Backend — Engineering photorealistic interior experiences with AI precision.*
 

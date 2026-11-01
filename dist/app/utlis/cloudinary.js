@@ -23,7 +23,7 @@ cloudinary_1.v2.config({
 const uploadToCloudinary = (fileOrBase64_1, ...args_1) => __awaiter(void 0, [fileOrBase64_1, ...args_1], void 0, function* (fileOrBase64, folder = 'curtain-ai') {
     try {
         const result = yield cloudinary_1.v2.uploader.upload(fileOrBase64, {
-            folder: `curtainz/${folder}`,
+            folder: `Curtain AI/${folder}`,
             resource_type: 'auto',
         });
         return {

@@ -1,7 +1,7 @@
 {
   "name": "curtain-ai-backend",
   "version": "1.0.0",
-  "description": "Curtainz AI Studio - Backend Engine & API",
+  "description": "Curtain AI AI Studio - Backend Engine & API",
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only ./src/server.ts",

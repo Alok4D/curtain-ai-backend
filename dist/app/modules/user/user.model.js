@@ -54,7 +54,7 @@ const userSchema = new mongoose_1.Schema({
     },
     bio: {
         type: String,
-        default: 'Curtainz Studio Team Member',
+        default: 'Curtain AI Studio Team Member',
     },
     status: {
         type: String,
