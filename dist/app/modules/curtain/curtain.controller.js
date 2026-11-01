@@ -77,6 +77,16 @@ const seedCurtains = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
         data: result,
     });
 }));
+const getCurtainRecommendations = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { roomImage } = req.body;
+    const result = yield curtain_service_1.CurtainService.getCurtainRecommendationsFromDB(roomImage);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Curtain recommendations curated by Interior Specialist successfully!',
+        data: result,
+    });
+}));
 exports.CurtainController = {
     getAllCurtains,
     getCurtainById,
@@ -84,4 +94,5 @@ exports.CurtainController = {
     updateCurtain,
     deleteCurtain,
     seedCurtains,
+    getCurtainRecommendations,
 };

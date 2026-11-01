@@ -8,6 +8,11 @@ const router = express.Router();
 
 router.get('/', CurtainController.getAllCurtains);
 router.get('/seed', CurtainController.seedCurtains);
+router.post(
+  '/recommend',
+  validateRequest(CurtainValidation.recommendCurtainValidationSchema),
+  CurtainController.getCurtainRecommendations,
+);
 router.get('/:id', CurtainController.getCurtainById);
 
 router.post(
