@@ -26,6 +26,24 @@ function toDataUrl(input) {
             throw new Error('Image source is missing.');
         }
         if (input.startsWith('data:image/')) {
+            // If it's non-standard (e.g. AVIF, HEIC, BMP), transcode to standard JPEG via Cloudinary
+            if (input.startsWith('data:image/avif') ||
+                input.startsWith('data:image/heic') ||
+                input.startsWith('data:image/heif') ||
+                input.startsWith('data:image/bmp')) {
+                try {
+                    if (config_1.default.cloudinary_cloud_name && config_1.default.cloudinary_api_key) {
+                        const uploadRes = yield (0, cloudinary_1.uploadToCloudinary)(input, 'visualizer_transcode');
+                        const jpgUrl = uploadRes.secure_url.replace(/\/upload\//, '/upload/f_jpg,q_90/');
+                        const res = yield fetch(jpgUrl);
+                        const buffer = yield res.arrayBuffer();
+                        return `data:image/jpeg;base64,${Buffer.from(buffer).toString('base64')}`;
+                    }
+                }
+                catch (err) {
+                    console.error('Failed to transcode non-standard image format via Cloudinary:', err);
+                }
+            }
             return input;
         }
         if (input.startsWith('http://') || input.startsWith('https://')) {
@@ -64,7 +82,7 @@ function toDataUrl(input) {
     });
 }
 const generateCurtainVisualization = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
     const { roomImage, curtainImage, curtainId, curtainName = 'Selected Fabric', drapeLength = 'just touching the floor', drapePosition = 'pulled open to the sides framing the window with natural daylight coming through', curtainRod = 'matte black minimalist curtain rod mounted just below the ceiling', userIp, userId, } = payload;
     const apiKey = (_a = config_1.default.openai_api_key) === null || _a === void 0 ? void 0 : _a.trim();
     const modelName = ((_b = config_1.default.image_model) === null || _b === void 0 ? void 0 : _b.trim()) || 'gpt-image-2.5-sunburst';
@@ -125,6 +143,7 @@ Output ONLY the modified room photograph with the newly fitted curtains.
     });
     if (!openAiResponse.ok) {
         const errData = (yield openAiResponse.json().catch(() => ({})));
+        console.error('OpenAI visualizer generation error:', JSON.stringify(errData, null, 2));
         let errMsg = ((_c = errData === null || errData === void 0 ? void 0 : errData.error) === null || _c === void 0 ? void 0 : _c.message) ||
             `OpenAI error (${openAiResponse.status}): ${openAiResponse.statusText}`;
         if (openAiResponse.status === 401) {
@@ -133,11 +152,15 @@ Output ONLY the modified room photograph with the newly fitted curtains.
         else if (openAiResponse.status === 429) {
             errMsg = 'OpenAI rate limit or usage quota reached. Please check balance.';
         }
+        else if (errMsg.includes('Invalid image data')) {
+            const param = (_d = errData === null || errData === void 0 ? void 0 : errData.error) === null || _d === void 0 ? void 0 : _d.param;
+            errMsg = `OpenAI could not process image${param ? ` (${param})` : ''}. Please ensure your room photo is in standard JPG or PNG format.`;
+        }
         throw new AppError_1.default(openAiResponse.status || http_status_1.default.INTERNAL_SERVER_ERROR, errMsg);
     }
     const data = (yield openAiResponse.json());
-    const b64Json = (_e = (_d = data === null || data === void 0 ? void 0 : data.data) === null || _d === void 0 ? void 0 : _d[0]) === null || _e === void 0 ? void 0 : _e.b64_json;
-    const directUrl = (_g = (_f = data === null || data === void 0 ? void 0 : data.data) === null || _f === void 0 ? void 0 : _f[0]) === null || _g === void 0 ? void 0 : _g.url;
+    const b64Json = (_f = (_e = data === null || data === void 0 ? void 0 : data.data) === null || _e === void 0 ? void 0 : _e[0]) === null || _f === void 0 ? void 0 : _f.b64_json;
+    const directUrl = (_h = (_g = data === null || data === void 0 ? void 0 : data.data) === null || _g === void 0 ? void 0 : _g[0]) === null || _h === void 0 ? void 0 : _h.url;
     if (!b64Json && !directUrl) {
         throw new AppError_1.default(http_status_1.default.INTERNAL_SERVER_ERROR, 'OpenAI returned no fitted image result. Please check image inputs.');
     }

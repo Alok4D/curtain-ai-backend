@@ -13,6 +13,25 @@ async function toDataUrl(input: string): Promise<string> {
   }
 
   if (input.startsWith('data:image/')) {
+    // If it's non-standard (e.g. AVIF, HEIC, BMP), transcode to standard JPEG via Cloudinary
+    if (
+      input.startsWith('data:image/avif') ||
+      input.startsWith('data:image/heic') ||
+      input.startsWith('data:image/heif') ||
+      input.startsWith('data:image/bmp')
+    ) {
+      try {
+        if (config.cloudinary_cloud_name && config.cloudinary_api_key) {
+          const uploadRes = await uploadToCloudinary(input, 'visualizer_transcode');
+          const jpgUrl = uploadRes.secure_url.replace(/\/upload\//, '/upload/f_jpg,q_90/');
+          const res = await fetch(jpgUrl);
+          const buffer = await res.arrayBuffer();
+          return `data:image/jpeg;base64,${Buffer.from(buffer).toString('base64')}`;
+        }
+      } catch (err) {
+        console.error('Failed to transcode non-standard image format via Cloudinary:', err);
+      }
+    }
     return input;
   }
 
@@ -133,6 +152,8 @@ Output ONLY the modified room photograph with the newly fitted curtains.
 
   if (!openAiResponse.ok) {
     const errData = (await openAiResponse.json().catch(() => ({}))) as any;
+    console.error('OpenAI visualizer generation error:', JSON.stringify(errData, null, 2));
+
     let errMsg =
       errData?.error?.message ||
       `OpenAI error (${openAiResponse.status}): ${openAiResponse.statusText}`;
@@ -141,6 +162,9 @@ Output ONLY the modified room photograph with the newly fitted curtains.
       errMsg = 'OpenAI rejected the API key. Please check billing and key validity.';
     } else if (openAiResponse.status === 429) {
       errMsg = 'OpenAI rate limit or usage quota reached. Please check balance.';
+    } else if (errMsg.includes('Invalid image data')) {
+      const param = errData?.error?.param;
+      errMsg = `OpenAI could not process image${param ? ` (${param})` : ''}. Please ensure your room photo is in standard JPG or PNG format.`;
     }
 
     throw new AppError(openAiResponse.status || httpStatus.INTERNAL_SERVER_ERROR, errMsg);
