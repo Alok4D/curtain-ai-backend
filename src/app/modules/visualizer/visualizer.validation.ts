@@ -9,6 +9,9 @@ const generateVisualizationValidationSchema = z.object({
     drapeLength: z.string().optional(),
     drapePosition: z.string().optional(),
     curtainRod: z.string().optional(),
+    headerStyle: z.string().optional(),
+    fabricOpacity: z.string().optional(),
+    pleatDensity: z.string().optional(),
   }),
 });
 
