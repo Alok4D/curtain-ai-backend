@@ -45,8 +45,14 @@ const recommendCurtainValidationSchema = zod_1.z.object({
         roomImage: zod_1.z.string({ message: 'Room image is required' }),
     }),
 });
+const autoFillCurtainSpecsValidationSchema = zod_1.z.object({
+    body: zod_1.z.object({
+        image: zod_1.z.string({ message: 'Curtain image is required' }),
+    }),
+});
 exports.CurtainValidation = {
     createCurtainValidationSchema,
     updateCurtainValidationSchema,
     recommendCurtainValidationSchema,
+    autoFillCurtainSpecsValidationSchema,
 };

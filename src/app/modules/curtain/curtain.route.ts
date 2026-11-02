@@ -13,6 +13,12 @@ router.post(
   validateRequest(CurtainValidation.recommendCurtainValidationSchema),
   CurtainController.getCurtainRecommendations,
 );
+router.post(
+  '/auto-fill-specs',
+  auth('admin'),
+  validateRequest(CurtainValidation.autoFillCurtainSpecsValidationSchema),
+  CurtainController.autoFillCurtainSpecs,
+);
 router.get('/:id', CurtainController.getCurtainById);
 
 router.post(

@@ -87,6 +87,18 @@ const getCurtainRecommendations = catchAsync(async (req, res) => {
   });
 });
 
+const autoFillCurtainSpecs = catchAsync(async (req, res) => {
+  const { image } = req.body;
+  const result = await CurtainService.autoFillCurtainSpecsFromImage(image);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Curtain specifications extracted successfully by AI!',
+    data: result,
+  });
+});
+
 export const CurtainController = {
   getAllCurtains,
   getCurtainById,
@@ -95,4 +107,5 @@ export const CurtainController = {
   deleteCurtain,
   seedCurtains,
   getCurtainRecommendations,
+  autoFillCurtainSpecs,
 };

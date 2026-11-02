@@ -87,6 +87,16 @@ const getCurtainRecommendations = (0, catchAsync_1.default)((req, res) => __awai
         data: result,
     });
 }));
+const autoFillCurtainSpecs = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { image } = req.body;
+    const result = yield curtain_service_1.CurtainService.autoFillCurtainSpecsFromImage(image);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Curtain specifications extracted successfully by AI!',
+        data: result,
+    });
+}));
 exports.CurtainController = {
     getAllCurtains,
     getCurtainById,
@@ -95,4 +105,5 @@ exports.CurtainController = {
     deleteCurtain,
     seedCurtains,
     getCurtainRecommendations,
+    autoFillCurtainSpecs,
 };

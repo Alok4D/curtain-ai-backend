@@ -445,6 +445,167 @@ You must strictly return JSON conforming to the requested schema. Use ONLY the p
         allCurtainsCount: allCurtains.length,
     };
 });
+const autoFillCurtainSpecsFromImage = (image) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b, _c, _d, _e;
+    if (!image) {
+        throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Curtain image is required for auto-filling specifications.');
+    }
+    const apiKey = (_a = config_1.default.openai_api_key) === null || _a === void 0 ? void 0 : _a.trim();
+    if (!apiKey) {
+        throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'OpenAI API key is missing. Please configure OPENAI_API_KEY in the environment.');
+    }
+    let formattedImageUrl = image.trim();
+    // If local public image path, read and encode
+    if (formattedImageUrl.startsWith('/')) {
+        const fs = yield Promise.resolve().then(() => __importStar(require('fs')));
+        const path = yield Promise.resolve().then(() => __importStar(require('path')));
+        const candidatePaths = [
+            path.join(process.cwd(), '../curtain-ai-frontend/public', formattedImageUrl.replace(/^\//, '')),
+            path.join(process.cwd(), 'public', formattedImageUrl.replace(/^\//, '')),
+        ];
+        for (const cand of candidatePaths) {
+            if (fs.existsSync(cand)) {
+                const buffer = fs.readFileSync(cand);
+                const ext = path.extname(cand).toLowerCase();
+                const mime = ext === '.png' ? 'image/png' : ext === '.webp' ? 'image/webp' : 'image/jpeg';
+                formattedImageUrl = `data:${mime};base64,${buffer.toString('base64')}`;
+                break;
+            }
+        }
+    }
+    const promptInstruction = `
+You are a senior textile engineer and luxury interior drapery specialist for Curtain AI Studio.
+Your task is to examine the provided curtain photograph with visual precision and extract commercial specifications to auto-fill the product catalog entry:
+1. Product Name: An elegant, commercially attractive product name reflecting the fabric tone and texture (e.g. 'Oatmeal Belgian Slub Linen', 'Midnight Navy Blackout Drape', 'Opal Whisper Sheer Voile', 'Sand Dunes Pleated Drapes').
+2. Category: Exactly one of ['curtains', 'sheers', 'rollers'].
+3. Colors: 1 to 4 dominant or accent colors visible in the fabric. Use ONLY from: ${JSON.stringify(ALLOWED_COLORS)}.
+4. Fabric: The primary textile material (e.g. 'linen', 'velvet', 'voile', 'cotton', 'polyester', 'silk', 'chenille').
+5. Pattern: Design pattern of the fabric (e.g. 'plain', 'striped', 'geometric', 'textured').
+6. Opacity: Light filtration level, exactly one of: ${JSON.stringify(ALLOWED_OPACITIES)}.
+7. Texture: The tactile weave description (e.g. 'natural slub weave', 'soft matte velvet', 'fine open gauze', 'smooth thermal blackout').
+8. Style: 1 to 3 interior styles this curtain best fits. Use ONLY from: ${JSON.stringify(ALLOWED_STYLES)}.
+9. Suitable Rooms: 1 to 3 rooms suited for this curtain. Use ONLY from: ${JSON.stringify(ALLOWED_ROOMS)}.
+
+CRITICAL: Return strictly valid JSON adhering to the specified schema.
+`.trim();
+    const apiPayload = {
+        model: 'gpt-4o',
+        messages: [
+            {
+                role: 'system',
+                content: promptInstruction,
+            },
+            {
+                role: 'user',
+                content: [
+                    {
+                        type: 'text',
+                        text: 'Analyze this curtain photo and generate full product specifications for catalog entry.',
+                    },
+                    {
+                        type: 'image_url',
+                        image_url: {
+                            url: formattedImageUrl,
+                            detail: 'high',
+                        },
+                    },
+                ],
+            },
+        ],
+        response_format: {
+            type: 'json_schema',
+            json_schema: {
+                name: 'curtain_product_specifications',
+                strict: true,
+                schema: {
+                    type: 'object',
+                    properties: {
+                        name: {
+                            type: 'string',
+                            description: 'Commercial, elegant product title for the curtain.',
+                        },
+                        category: {
+                            type: 'string',
+                            enum: ALLOWED_CATEGORIES,
+                        },
+                        colors: {
+                            type: 'array',
+                            items: {
+                                type: 'string',
+                                enum: ALLOWED_COLORS,
+                            },
+                        },
+                        fabric: {
+                            type: 'string',
+                            description: 'Primary fabric textile (e.g. linen, velvet, voile, cotton, polyester).',
+                        },
+                        pattern: {
+                            type: 'string',
+                            description: 'Fabric design pattern (e.g. plain, striped, geometric, textured).',
+                        },
+                        opacity: {
+                            type: 'string',
+                            enum: ALLOWED_OPACITIES,
+                        },
+                        texture: {
+                            type: 'string',
+                            description: 'Tactile weave texture description (e.g. natural slub weave, soft matte).',
+                        },
+                        style: {
+                            type: 'array',
+                            items: {
+                                type: 'string',
+                                enum: ALLOWED_STYLES,
+                            },
+                        },
+                        suitableRooms: {
+                            type: 'array',
+                            items: {
+                                type: 'string',
+                                enum: ALLOWED_ROOMS,
+                            },
+                        },
+                    },
+                    required: [
+                        'name',
+                        'category',
+                        'colors',
+                        'fabric',
+                        'pattern',
+                        'opacity',
+                        'texture',
+                        'style',
+                        'suitableRooms',
+                    ],
+                    additionalProperties: false,
+                },
+            },
+        },
+        temperature: 0.2,
+    };
+    const openAiResponse = yield fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify(apiPayload),
+    });
+    if (!openAiResponse.ok) {
+        const errData = (yield openAiResponse.json().catch(() => ({})));
+        console.error('OpenAI autoFill specs error:', errData);
+        const errMsg = ((_b = errData === null || errData === void 0 ? void 0 : errData.error) === null || _b === void 0 ? void 0 : _b.message) ||
+            `OpenAI error (${openAiResponse.status}): ${openAiResponse.statusText}`;
+        throw new AppError_1.default(openAiResponse.status || http_status_1.default.INTERNAL_SERVER_ERROR, errMsg);
+    }
+    const responseJson = (yield openAiResponse.json());
+    const content = (_e = (_d = (_c = responseJson === null || responseJson === void 0 ? void 0 : responseJson.choices) === null || _c === void 0 ? void 0 : _c[0]) === null || _d === void 0 ? void 0 : _d.message) === null || _e === void 0 ? void 0 : _e.content;
+    if (!content) {
+        throw new AppError_1.default(http_status_1.default.INTERNAL_SERVER_ERROR, 'Failed to receive specifications from AI analysis.');
+    }
+    const specs = JSON.parse(content);
+    return specs;
+});
 exports.CurtainService = {
     getAllCurtainsFromDB,
     getCurtainByIdFromDB,
@@ -453,4 +614,5 @@ exports.CurtainService = {
     deleteCurtainFromDB,
     seedCurtainsIntoDB,
     getCurtainRecommendationsFromDB,
+    autoFillCurtainSpecsFromImage,
 };

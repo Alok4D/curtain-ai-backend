@@ -46,8 +46,15 @@ const recommendCurtainValidationSchema = z.object({
   }),
 });
 
+const autoFillCurtainSpecsValidationSchema = z.object({
+  body: z.object({
+    image: z.string({ message: 'Curtain image is required' }),
+  }),
+});
+
 export const CurtainValidation = {
   createCurtainValidationSchema,
   updateCurtainValidationSchema,
   recommendCurtainValidationSchema,
+  autoFillCurtainSpecsValidationSchema,
 };

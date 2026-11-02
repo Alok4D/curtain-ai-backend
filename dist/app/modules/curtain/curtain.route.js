@@ -13,6 +13,7 @@ const router = express_1.default.Router();
 router.get('/', curtain_controller_1.CurtainController.getAllCurtains);
 router.get('/seed', curtain_controller_1.CurtainController.seedCurtains);
 router.post('/recommend', (0, validateRequest_1.default)(curtain_validation_1.CurtainValidation.recommendCurtainValidationSchema), curtain_controller_1.CurtainController.getCurtainRecommendations);
+router.post('/auto-fill-specs', (0, auth_1.default)('admin'), (0, validateRequest_1.default)(curtain_validation_1.CurtainValidation.autoFillCurtainSpecsValidationSchema), curtain_controller_1.CurtainController.autoFillCurtainSpecs);
 router.get('/:id', curtain_controller_1.CurtainController.getCurtainById);
 router.post('/', (0, auth_1.default)('admin'), (0, validateRequest_1.default)(curtain_validation_1.CurtainValidation.createCurtainValidationSchema), curtain_controller_1.CurtainController.createCurtain);
 router.patch('/:id', (0, auth_1.default)('admin'), (0, validateRequest_1.default)(curtain_validation_1.CurtainValidation.updateCurtainValidationSchema), curtain_controller_1.CurtainController.updateCurtain);
