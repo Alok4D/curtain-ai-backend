@@ -81,9 +81,100 @@ function toDataUrl(input) {
         throw new Error('Unsupported image format. Provide a valid URL or base64 dataUrl.');
     });
 }
+// Architectural styling prompt translation
+function mapDrapeLength(val) {
+    const lower = (val || '').toLowerCase();
+    if (lower.includes('puddle') || lower.includes('floor-length')) {
+        return 'Floor-length with an elegant puddle break pooling slightly onto the floor';
+    }
+    if (lower.includes('sill-length') || lower.includes('sill')) {
+        return 'Sill-length finishing precisely at the window sill trim without touching the radiator or wall beneath';
+    }
+    if (lower.includes('apron-length') || lower.includes('apron')) {
+        return 'Apron-length extending 3 to 4 inches below the window sill apron';
+    }
+    // Default: Floor-skimming
+    return 'Floor-skimming finishing precisely where the fabric gently touches the floor surface without break';
+}
+function mapDrapePosition(val) {
+    const lower = (val || '').toLowerCase();
+    if (lower.includes('fully closed') || lower.includes('closed')) {
+        return 'Fully closed and drawn together across the entire window expanse providing complete window coverage';
+    }
+    if (lower.includes('half open') || lower.includes('half')) {
+        return 'Half open partially drawn across the sides while keeping the center opening clear to diffuse soft daylight';
+    }
+    if (lower.includes('fully open') || lower.includes('full open')) {
+        return 'Fully open and pulled completely back to the window edges with neat vertical drape folds, exposing the entire window and natural daylight';
+    }
+    // Default: Framing sides
+    return 'Framing sides symmetrically pulled to both sides of the window framing the glass cleanly while letting natural daylight stream through';
+}
+function mapCurtainRod(val) {
+    const lower = (val || '').toLowerCase();
+    if (lower.includes('brass') || lower.includes('gold')) {
+        return 'Luxurious warm brushed gold brass curtain rod with refined spherical finials and matching gold rings';
+    }
+    if (lower.includes('silver') || lower.includes('nickel') || lower.includes('chrome')) {
+        return 'Sleek brushed nickel and polished silver metal curtain rod with contemporary minimalist end-caps';
+    }
+    if (lower.includes('hidden') || lower.includes('recessed')) {
+        return 'Hidden ceiling track recessed seamlessly into a ceiling pelmet/pocket with the drapes floating effortlessly from the ceiling';
+    }
+    if (lower.includes('ceiling track') || lower.includes('track')) {
+        return 'Slim flush ceiling-mounted architectural curtain track cleanly integrated along the ceiling plane';
+    }
+    // Default: Matte Black
+    return 'Matte black architectural minimalist curtain rod with matching black rings and low-profile brackets mounted just below the ceiling';
+}
+function mapHeaderStyle(val) {
+    const lower = (val || '').toLowerCase();
+    if (lower.includes('pinch') || lower.includes('tailored pleat')) {
+        return 'Tailored triple pinch pleat header with crisp stitched top pleats fanning into graceful vertical drapery folds';
+    }
+    if (lower.includes('eyelet') || lower.includes('grommet')) {
+        return 'Contemporary metallic eyelet grommet rings punched through the top header and threaded over the rod, creating deep uniform cylindrical S-curves';
+    }
+    if (lower.includes('pencil')) {
+        return 'Traditional pencil pleat header featuring a neat row of tightly gathered uniform vertical folds';
+    }
+    if (lower.includes('tab')) {
+        return 'Casual tab top header with fabric loops sewn to the upper hem sliding directly onto the rod';
+    }
+    // Default: Wave Header
+    return 'Contemporary wave header (S-Fold ripple drape) creating smooth, uninterrupted rolling waves from top to bottom';
+}
+function mapFabricOpacity(val) {
+    const lower = (val || '').toLowerCase();
+    if (lower.includes('blackout')) {
+        return '100% total room-darkening blackout opacity with solid weave blocking direct light transmission through the fabric';
+    }
+    if (lower.includes('semi-sheer') || lower.includes('semi sheer')) {
+        return 'Semi-sheer weave providing gentle light diffusion while preserving daytime privacy with a soft interior glow';
+    }
+    if (lower.includes('sheer')) {
+        return 'Airy translucent sheer voile weave allowing outdoor daylight and soft ambient illumination to illuminate the room naturally';
+    }
+    if (lower.includes('light-filtering') || lower.includes('light filtering')) {
+        return 'Light-filtering weave that softens harsh direct sun glare while keeping the room naturally bright';
+    }
+    // Default: Auto / match fabric swatch
+    return 'Preserve the natural light-filtering characteristics and native opacity of the catalog fabric swatch (IMAGE 2)';
+}
+function mapPleatDensity(val) {
+    const lower = (val || '').toLowerCase();
+    if (lower.includes('full') || lower.includes('heavy') || lower.includes('luxury')) {
+        return 'Full 2.5x to 3.0x luxury fullness with deep, generous cascading 3D vertical fabric ripples';
+    }
+    if (lower.includes('standard') || lower.includes('light')) {
+        return 'Standard 1.5x fullness with tailored, clean, and spaced vertical fabric folds';
+    }
+    // Default: Medium
+    return 'Balanced 2.0x designer fullness creating classic graceful drapery ripples with natural depth and weight';
+}
 const generateCurtainVisualization = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b, _c, _d, _e, _f, _g, _h;
-    const { roomImage, curtainImage, curtainId, curtainName = 'Selected Fabric', drapeLength = 'just touching the floor', drapePosition = 'pulled open to the sides framing the window with natural daylight coming through', curtainRod = 'matte black minimalist curtain rod mounted just below the ceiling', userIp, userId, } = payload;
+    const { roomImage, curtainImage, curtainId, curtainName = 'Selected Fabric', drapeLength = 'Floor-skimming', drapePosition = 'Framing sides', curtainRod = 'Matte Black', headerStyle = 'Wave Header', fabricOpacity = 'Auto', pleatDensity = 'Medium', userIp, userId, } = payload;
     const apiKey = (_a = config_1.default.openai_api_key) === null || _a === void 0 ? void 0 : _a.trim();
     const modelName = ((_b = config_1.default.image_model) === null || _b === void 0 ? void 0 : _b.trim()) || 'gpt-image-2.5-sunburst';
     if (!apiKey) {
@@ -94,6 +185,13 @@ const generateCurtainVisualization = (payload) => __awaiter(void 0, void 0, void
         toDataUrl(roomImage),
         toDataUrl(curtainImage),
     ]);
+    // Translate options into rich architectural rendering directives
+    const mappedLength = mapDrapeLength(drapeLength);
+    const mappedPosition = mapDrapePosition(drapePosition);
+    const mappedRod = mapCurtainRod(curtainRod);
+    const mappedHeader = mapHeaderStyle(headerStyle);
+    const mappedOpacity = mapFabricOpacity(fabricOpacity);
+    const mappedPleats = mapPleatDensity(pleatDensity);
     // 2. Construct precision prompt with strict room preservation invariance
     const promptInstruction = `
 You are an expert architectural visualizer and photorealistic interior designer specialized in precision virtual curtain installations.
@@ -104,13 +202,16 @@ You are provided with two images:
 2. IMAGE 2: The catalog image showing the specific curtain, fabric, textile weave, pattern, and color.
 
 EXECUTE THE FOLLOWING PRECISE EDIT:
-1. WINDOW IDENTIFICATION: Identify the window(s) and window frames in IMAGE 1.
-2. CURTAIN FITTING: Install the exact curtain fabric, color, texture, and pattern from IMAGE 2 over the window(s) of IMAGE 1.
-3. STYLING SPECIFICATIONS:
-   - Draping length: ${drapeLength}.
-   - Draping arrangement: ${drapePosition}.
-   - Mounting hardware: ${curtainRod}.
-   - Real-world physics: Render realistic fabric folds, vertical ripples, realistic weight, natural drop, and accurate light pass-through according to the lighting angle in the original room.
+1. WINDOW IDENTIFICATION: Identify the window(s), window glass, and window frame architecture in IMAGE 1.
+2. CURTAIN FITTING & TEXTILE TRANSFER: Install the exact curtain fabric, color, texture, and pattern from IMAGE 2 over the window(s) of IMAGE 1.
+3. ARCHITECTURAL STYLING & FIT SPECIFICATIONS:
+   - Curtain Length: ${mappedLength}.
+   - Drape Arrangement: ${mappedPosition}.
+   - Mounting Hardware: ${mappedRod}.
+   - Header Tailoring Style: ${mappedHeader}.
+   - Fabric Light Opacity: ${mappedOpacity}.
+   - Pleat Fullness & Density: ${mappedPleats}.
+   - Physics & Realism: Render realistic fabric folds, vertical ripples, realistic textile weight, natural gravity drop, and accurate light pass-through according to the lighting angle in the original room.
 
 CRITICAL INVARIANCE RULES (STRICT PRESERVATION):
 - DO NOT change, alter, or re-render any other element of the room in IMAGE 1.
@@ -118,7 +219,7 @@ CRITICAL INVARIANCE RULES (STRICT PRESERVATION):
 - DO NOT move, modify, replace, or alter any furniture (sofas, tables, chairs, beds), decorative items, lamps, ceiling lights, rugs, or plants.
 - DO NOT change the flooring (hardwood, carpet, tiles).
 - DO NOT change the room's camera perspective, depth of field, or architectural dimensions.
-- The ONLY modification allowed is installing the curtain and curtain rod at the window opening, keeping the rest of the room 100% identical.
+- The ONLY modification allowed is installing the curtain, hardware, and tailored drapery at the window opening, keeping the rest of the room 100% identical.
 
 Output ONLY the modified room photograph with the newly fitted curtains.
 `.trim();
@@ -191,6 +292,9 @@ Output ONLY the modified room photograph with the newly fitted curtains.
         drapeLength,
         drapePosition,
         curtainRod,
+        headerStyle,
+        fabricOpacity,
+        pleatDensity,
         userIp,
         userId,
     });
@@ -202,6 +306,9 @@ Output ONLY the modified room photograph with the newly fitted curtains.
         drapeLength,
         drapePosition,
         curtainRod,
+        headerStyle,
+        fabricOpacity,
+        pleatDensity,
         createdAt: record.createdAt,
     };
 });

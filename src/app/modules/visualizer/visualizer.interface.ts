@@ -8,6 +8,9 @@ export interface TVisualizationInput {
   drapeLength?: string;
   drapePosition?: string;
   curtainRod?: string;
+  headerStyle?: string;
+  fabricOpacity?: string;
+  pleatDensity?: string;
   userIp?: string;
   userId?: Types.ObjectId;
 }
@@ -21,9 +24,11 @@ export interface TVisualization {
   drapeLength: string;
   drapePosition: string;
   curtainRod: string;
+  headerStyle?: string;
+  fabricOpacity?: string;
+  pleatDensity?: string;
   userIp?: string;
   userId?: Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
-

@@ -11,6 +11,9 @@ const generateVisualizationValidationSchema = zod_1.z.object({
         drapeLength: zod_1.z.string().optional(),
         drapePosition: zod_1.z.string().optional(),
         curtainRod: zod_1.z.string().optional(),
+        headerStyle: zod_1.z.string().optional(),
+        fabricOpacity: zod_1.z.string().optional(),
+        pleatDensity: zod_1.z.string().optional(),
     }),
 });
 exports.VisualizerValidation = {

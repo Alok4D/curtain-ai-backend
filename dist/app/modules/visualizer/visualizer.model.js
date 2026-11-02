@@ -24,15 +24,27 @@ const visualizationSchema = new mongoose_1.Schema({
     },
     drapeLength: {
         type: String,
-        default: 'just touching the floor',
+        default: 'Floor-skimming',
     },
     drapePosition: {
         type: String,
-        default: 'pulled open to the sides framing the window with natural daylight coming through',
+        default: 'Framing sides',
     },
     curtainRod: {
         type: String,
-        default: 'matte black minimalist curtain rod mounted just below the ceiling',
+        default: 'Matte black minimalist curtain rod',
+    },
+    headerStyle: {
+        type: String,
+        default: 'Wave Header',
+    },
+    fabricOpacity: {
+        type: String,
+        default: 'Auto',
+    },
+    pleatDensity: {
+        type: String,
+        default: 'Medium',
     },
     userIp: {
         type: String,
